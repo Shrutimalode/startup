@@ -7,7 +7,7 @@ import SevicesForm from '../Pages/ServicesFrom/SevicesFrom';
 import ContactInfo from '../../contact/contact';
 import JanmashtamiPackages from '../Pages/JanmashtamiPackages/JanmashtamiPackages';
 import ElectricianServices from '../Pages/ElectricianServices/ElectricianServices';
-import PlumberServices from '../Pages/PlumberServices/plumberservices';
+import PlumberServices from '../Pages/PlumberServices/PlumberServices';
 import HomeLoanServices from '../Pages/HomeLoanServices/HomeLoanServices';
 import ContracterServices from '../Pages/ContracterServices/ContracterServices';
 import CleaningServices from '../Pages/CleaningServices/CleaningServices';
