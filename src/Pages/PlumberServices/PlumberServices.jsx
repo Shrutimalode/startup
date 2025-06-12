@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { Phone, CheckCircle, Wrench, Zap, Home, Building, Shield, Clock } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import Footer from '../../Components/Footer/Footer';
 import ServiceBookingForm from '../../Components/ServiceBookingForm/ServiceBookingForm';
 import { Carousel } from "react-responsive-carousel";
+import { isAuthenticated, setRedirectAfterLogin } from '../../Utils/AuthData';
 
 const PlumberServices = () => {
+  const navigate = useNavigate();
   const [isBookingFormOpen, setIsBookingFormOpen] = useState(false);
   const services = [
     {
@@ -45,6 +48,15 @@ const PlumberServices = () => {
     }
   ];
 
+  const handleBookNowClick = () => {
+    if (isAuthenticated()) {
+      setIsBookingFormOpen(true);
+    } else {
+      setRedirectAfterLogin('/plumber-services');
+      navigate('/login');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
       {/* Hero Section */}
@@ -59,7 +71,7 @@ const PlumberServices = () => {
             <p className="text-sm sm:text-lg md:text-2xl opacity-90 text-blue-900">तुमच्या घरासाठी, तुमच्याच शहरात !</p>
             <p className="text-xs sm:text-base md:text-lg font-bold text-black">१ तासात सेवा, तुमच्या दारात !</p>
             <button 
-              onClick={() => setIsBookingFormOpen(true)}
+              onClick={handleBookNowClick}
               className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-6 py-2 sm:px-8 sm:py-3 rounded-full flex items-center gap-2 text-sm sm:text-base"
             >
               BOOK NOW
@@ -116,7 +128,7 @@ const PlumberServices = () => {
     
     <span className="text-black ml-3 font-bold ">- विश्वासार्ह सेवा, तत्काळ समाधान</span>
     <button
-      onClick={() => setIsBookingFormOpen(true)}
+      onClick={handleBookNowClick}
       className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-6 py-2 sm:px-8 mt-5 sm:py-3 rounded-full flex items-center gap-2 text-sm sm:text-base"
     >
       BOOK NOW
@@ -193,11 +205,13 @@ const PlumberServices = () => {
 
 
      {/* Service Booking Form */}
-     <ServiceBookingForm 
-      isOpen={isBookingFormOpen}
-      onClose={() => setIsBookingFormOpen(false)}
-      serviceType="plumber"
-    />
+     {isBookingFormOpen && (
+       <ServiceBookingForm 
+         isOpen={isBookingFormOpen}
+         onClose={() => setIsBookingFormOpen(false)}
+         serviceType="plumber"
+       />
+     )}
     <Footer />
     </div>
    

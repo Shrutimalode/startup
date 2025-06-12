@@ -1,21 +1,22 @@
 import React from 'react';
 import { Carousel } from 'react-responsive-carousel';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { isAuthenticated, setRedirectAfterLogin } from '../../Utils/AuthData';
 
 const AdsCarousel = () => {
   const navigate = useNavigate();
   const ads = [
     {
       id: 1,
-      title: "जन्माष्टमी स्पेशल पॅकेज",
-      subtitle: "तयारी आम्ही करू, उत्सव तुम्ही साजरा करा!",
-      image: "/images/krishna.jpg",
-      background: "bg-gradient-to-r from-orange-200 via-yellow-100 to-blue-100",
+      title: "शंकर नगर",
+      subtitle: "हक्काचं प्लॉट आता सहज शक्य!",
+      image: "/images/width_800.webp",
+      background: "bg-gradient-to-r from-green-200 via-green-100 to-yellow-100",
       isSpecialOffer: true,
-      link: '/janmashtami-packages'
+      link: '/manoram-nagri-services'
     },
-    {
+    /*{
       id: 2,
       title: "More offers soon to be launch",
       comingSoon: true,
@@ -26,12 +27,15 @@ const AdsCarousel = () => {
       title: "More offers soon to be launch",
       comingSoon: true,
       background: "bg-gradient-to-r from-blue-400 via-blue-200 to-blue-100"
-    }
+    }*/
   ];
 
   const handleBookNow = (link) => {
-    if (link) {
+    if (isAuthenticated()) {
       navigate(link);
+    } else {
+      setRedirectAfterLogin(link);
+      navigate('/login');
     }
   };
 
@@ -56,34 +60,35 @@ const AdsCarousel = () => {
             <div className="absolute inset-0 bg-black/20 z-0"></div>
             <div className="flex items-center h-full relative z-10">
               {ad.isSpecialOffer ? (
-                // Special Janmashtami offer layout
-                <div className="flex w-full items-center justify-between px-6 sm:px-12">
-                  <div className="text-left">
-                    <div className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-2 sm:mb-4 text-orange-700 drop-shadow">
-                      जय श्री कृष्णा
+                // Special offer layout
+                <div className="relative w-full h-full">
+                  <div 
+                    className="absolute inset-0 z-0"
+                    style={{
+                      backgroundImage: `url(${ad.image})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                      opacity: '0.85'
+                    }}
+                  ></div>
+                  <div className="absolute inset-0 bg-black/40 z-1"></div>
+                  <div className="relative z-10 flex w-full h-full items-center px-6 sm:px-12">
+                    <div className="text-left">
+                      <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-1 sm:mb-2 text-white drop-shadow-lg">
+                        {ad.title}
+                      </h2>
+                      <p className="text-sm sm:text-xl md:text-2xl font-semibold text-white drop-shadow-lg">
+                        {ad.subtitle}
+                      </p>
+                      <div className="flex justify-start mt-4">
+                        <button
+                          onClick={() => handleBookNow(ad.link)}
+                          className="bg-[#FFA500] hover:bg-[#FF8C00] text-white font-semibold px-6 py-2 sm:px-8 sm:py-3 rounded-full flex items-center gap-2 text-sm sm:text-base"
+                        >
+                          BOOK NOW
+                        </button>
+                      </div>
                     </div>
-                    <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-1 sm:mb-2 text-red-800 drop-shadow">
-                      {ad.title}
-                    </h2>
-                    <p className="text-sm sm:text-xl md:text-2xl font-semibold text-orange-800 drop-shadow">
-                      {ad.subtitle}
-                    </p>
-
-                    <div className="flex justify-center">
-                      <button
-                        onClick={() => handleBookNow(ad.link)}
-                        className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-6 py-2 sm:px-8 sm:py-3 rounded-full flex items-center gap-2 text-sm sm:text-base mt-3"
-                      >
-                        BOOK NOW
-                      </button>
-                    </div>
-                  </div>
-                  <div className="w-1/3 flex justify-end">
-                    <img
-                      src={ad.image}
-                      alt={ad.title}
-                      className="h-40 sm:h-44 md:h-56 lg:h-60 object-contain drop-shadow-xl"
-                    />
                   </div>
                 </div>
               ) : (

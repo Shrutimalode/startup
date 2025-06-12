@@ -47,35 +47,99 @@ export default function SignupForm({ setIsLogin }) {
             setIsLogin(true);
             setIsValid(true);
         }
-
     }
 
     return (
-        <div className="glass card">
-            <form onSubmit={handleSubmit} className="fieldset shadow-lg rounded-box w-xs p-4">
-                <legend className="fieldset-legend">Sign Up</legend>
+        <div className="glass card p-6 shadow-xl backdrop-blur-sm">
+            <form onSubmit={handleSubmit} className="space-y-4">
+                <h2 className="text-2xl font-bold text-center mb-6 text-base-content">Sign Up</h2>
 
-                <label className="label">Email</label>
-                <input type="email" value={email} onChange={handleEmail} required className="validator input !bg-base-content !text-base-100 focus-within:outline-none focus-withnin:border-none" placeholder="Email" />
+                <div className="form-control">
+                    <label className="label">
+                        <span className="label-text text-base-content">Email</span>
+                    </label>
+                    <input 
+                        type="email" 
+                        value={email} 
+                        onChange={handleEmail} 
+                        required 
+                        className="input input-bordered bg-base-200/50 text-base-content" 
+                        placeholder="Email" 
+                    />
+                </div>
 
+                <div className="form-control">
+                    <label className="label">
+                        <span className="label-text text-base-content">Name</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        value={name} 
+                        onChange={handleName} 
+                        required 
+                        className="input input-bordered bg-base-200/50 text-base-content" 
+                        placeholder="Name" 
+                    />
+                </div>
 
-                <label className="label">Name</label>
-                <input type="text" value={name} onChange={handleName} required className="validator input !bg-base-content !text-base-100 focus-within:outline-none focus-withnin:border-none" placeholder="Name" />
+                <div className="form-control">
+                    <label className="label">
+                        <span className="label-text text-base-content">Phone Number</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        value={phone} 
+                        onChange={handlePhone} 
+                        required 
+                        className={`input input-bordered bg-base-200/50 text-base-content ${!isValid && phone ? 'input-error' : ''}`}
+                        placeholder="Phone" 
+                    />
+                    {!isValid && phone && (
+                        <label className="label">
+                            <span className="label-text-alt text-error">Please enter a valid 10-digit phone number</span>
+                        </label>
+                    )}
+                </div>
 
-                <label className="label">Phone Number</label>
-                <input type="text" value={phone} onChange={handlePhone} required className="validator input !bg-base-content !text-base-100 focus-within:outline-none focus-withnin:border-none" placeholder="Phone" />
+                <div className="form-control">
+                    <label className="label">
+                        <span className="label-text text-base-content">Password</span>
+                    </label>
+                    <input 
+                        type="password" 
+                        value={password} 
+                        onChange={handlePassword} 
+                        required 
+                        className="input input-bordered bg-base-200/50 text-base-content" 
+                        placeholder="Password" 
+                    />
+                </div>
 
-                <label className="label">Password</label>
-                <input type="password" value={password} onChange={handlePassword} required className="validator input !bg-base-content !text-base-100 focus-within:outline-none focus-withnin:border-none" placeholder="Password" />
+                <div className="form-control">
+                    <label className="label">
+                        <span className="label-text text-base-content">Confirm Password</span>
+                    </label>
+                    <input 
+                        type="password" 
+                        value={cpassword} 
+                        onChange={handleCpassword} 
+                        required 
+                        className="input input-bordered bg-base-200/50 text-base-content" 
+                        placeholder="Confirm Password" 
+                    />
+                </div>
 
-                <label className="label">Confirm Password</label>
-                <input type="password" value={cpassword} onChange={handleCpassword} required className="validator input !bg-base-content !text-base-100 focus-within:outline-none focus-withnin:border-none" placeholder="Confirm Password" />
+                <button type='submit' className="btn btn-primary w-full mt-6">Sign Up</button>
 
-                <button type='submit' className="btn btn-primary  mt-4">Sign Up</button>
-
-                <div className="w-full flex flex-col gap-2 items-center justify-center mt-4">
-                    <span className=' font-bold'>Already have an Account</span>
-                    <button onClick={() => setIsLogin(true)} type='button' className='btn btn-xs btn-outlint'>Login</button>
+                <div className="text-center mt-4">
+                    <p className="text-base-content mb-2">Already have an Account?</p>
+                    <button 
+                        onClick={() => setIsLogin(true)} 
+                        type='button' 
+                        className='btn btn-outline btn-sm'
+                    >
+                        Login
+                    </button>
                 </div>
             </form>
         </div>

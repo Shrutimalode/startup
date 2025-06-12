@@ -1,10 +1,24 @@
 import React, { useState } from 'react';
 import { Phone, CheckCircle, Wrench, Zap, Home, Building, Shield, Clock } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import Footer from '../../Components/Footer/Footer';
 import ServiceBookingForm from '../../Components/ServiceBookingForm/ServiceBookingForm';
 import { Carousel } from "react-responsive-carousel";
+import { isAuthenticated, setRedirectAfterLogin } from '../../Utils/AuthData';
+
 const ElectricianServices = () => {
+  const navigate = useNavigate();
   const [isBookingFormOpen, setIsBookingFormOpen] = useState(false);
+
+  const handleBookNowClick = () => {
+    if (isAuthenticated()) {
+      setIsBookingFormOpen(true);
+    } else {
+      setRedirectAfterLogin('/electrician-services');
+      navigate('/login');
+    }
+  };
+
   const services = [
     {
       title: "वीजपुरवठा व तपासणी ",
@@ -65,7 +79,7 @@ const ElectricianServices = () => {
             <p className="text-sm sm:text-lg md:text-2xl opacity-90 text-blue-900">घराबाहेर न पडता तज्ज्ञ सेवा तुमच्या दारात !</p>
             <p className="text-xs sm:text-base md:text-lg font-bold text-black">१ तासात सेवा, तुमच्या दारात !</p>
             <button 
-              onClick={() => setIsBookingFormOpen(true)}
+              onClick={handleBookNowClick}
               className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-6 py-2 sm:px-8 sm:py-3 rounded-full flex items-center gap-2 text-sm sm:text-base"
             >
               BOOK NOW
@@ -195,11 +209,13 @@ const ElectricianServices = () => {
 
 
       {/* Service Booking Form */}
-      <ServiceBookingForm 
-        isOpen={isBookingFormOpen}
-        onClose={() => setIsBookingFormOpen(false)}
-        serviceType="electrician"
-      />
+      {isBookingFormOpen && (
+        <ServiceBookingForm
+          isOpen={isBookingFormOpen}
+          onClose={() => setIsBookingFormOpen(false)}
+          serviceType="electrician"
+        />
+      )}
 
       <Footer />
     </div>

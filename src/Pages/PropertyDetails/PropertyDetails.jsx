@@ -1,15 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
 import { FaCar } from "react-icons/fa";
 import { IoIosArrowBack } from "react-icons/io";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import Modal from "../../Components/Modal/Modal";
-import { getUser } from "../../Utils/AuthData";
+import { getUser, isAuthenticated, setRedirectAfterLogin } from "../../Utils/AuthData";
 import toast from "react-hot-toast";
 import { bookProperty } from "../../actions/PropertyDetails/PropertyActions";
 
 const PropertyDetails = () => {
     const [property, setProperty] = useState(null);
     const imgRef = useRef(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const propertyData = localStorage.getItem("property");
@@ -21,11 +22,13 @@ const PropertyDetails = () => {
     }
 
     const handleBookNow = () => {
-        const user = getUser();
-        if (!user) {
-            toast.error("Please login to book this property");
+        if (!isAuthenticated()) {
+            setRedirectAfterLogin('/propertyDetails');
+            navigate('/login');
             return;
         }
+
+        const user = getUser();
         const bookingData = {
             property_id: property?.property_id || property?.id,
             user_id: user?.id,
@@ -43,8 +46,8 @@ const PropertyDetails = () => {
             error: (err) => {
                 toast.error(err?.detail || 'Booking failed');
             }
-        })
-    }
+        });
+    };
 
     return (
         <div className="h-full flex flex-col">

@@ -1,12 +1,24 @@
 import React, { useState } from 'react';
 import { Phone, CheckCircle, Wrench, Zap } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import Footer from '../../Components/Footer/Footer';
 import ServiceBookingForm from '../../Components/ServiceBookingForm/ServiceBookingForm';
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { isAuthenticated, setRedirectAfterLogin } from '../../Utils/AuthData';
 
 const HomeLoanServices = () => {
+  const navigate = useNavigate();
   const [isBookingFormOpen, setIsBookingFormOpen] = useState(false);
+
+  const handleBookNowClick = () => {
+    if (isAuthenticated()) {
+      setIsBookingFormOpen(true);
+    } else {
+      setRedirectAfterLogin('/home-loan-services');
+      navigate('/login');
+    }
+  };
 
   return (
     <div className="bg-gradient-to-b from-blue-50 to-white min-h-screen flex flex-col">
@@ -21,7 +33,7 @@ const HomeLoanServices = () => {
           <p className="text-sm sm:text-base md:text-xl opacity-90 text-blue-700">घरकर्जाची खात्रीशीर आणि सोपी वाट Realtor Xpert बरोबर !</p>
           <p className="text-xs sm:text-sm md:text-base font-bold text-black mt-1">१ तासात सेवा, तुमच्या दारात !</p>
           <button 
-            onClick={() => setIsBookingFormOpen(true)}
+            onClick={handleBookNowClick}
             className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-3 py-1 sm:px-6 sm:py-2 rounded-full flex items-center gap-2 text-sm sm:text-base mt-2"
           >
             BOOK NOW

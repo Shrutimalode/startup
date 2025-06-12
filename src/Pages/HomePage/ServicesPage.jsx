@@ -6,10 +6,11 @@ const ServicesPage = () => {
     const services = [
         { title: 'Loan Services', desc: 'Home Loan, Gold and More', img: '/images/bank.png', link: 'loan' },
         { title: 'Home Interiors & Architecture', desc: 'Free Personal Designer', img: '/images/homeineterion.png', link: 'interior' },
-        { title: 'Cleaning Sevices', desc: 'Car, Solar Pannel, Home and More', img: '/images/cleaner.png', link: 'cleaning' },
+        { title: 'Cleaning Services', desc: 'Car, Solar Panel, Home and More', img: '/images/cleaner.png', link: 'cleaning' },
         { title: 'Contractor', desc: 'Best Experienced Services', img: '/images/contractor.png', link: 'contractor' },
         { title: 'Plumber', desc: "Full Plumbing Services", img: '/images/plumber.png', link: 'plumber' },
         { title: 'Electrician', desc: "Full Electrical Services", img: '/images/electrician.png', link: 'electrician' },
+
     ];
 
     const navigateToService = (link) => {
@@ -21,6 +22,10 @@ const ServicesPage = () => {
             navigate('/loan-services');
         } else if (link === 'contractor') {
             navigate('/contracter-services');
+        } else if (link === 'cleaning') {
+            navigate('/cleaning-services');
+        }else if (link === 'interior') {
+            navigate('/architecture-services');
         } 
         else {
             localStorage.setItem('service', link);
@@ -37,10 +42,13 @@ const ServicesPage = () => {
             <div className="flex flex-wrap justify-center items-center gap-4 px-4 sm:px-8 py-6">
                 {services.map((service, index) => (
                     <div onClick={() => navigateToService(service.link)} key={`services_${index}`} className="card shadow cursor-pointer relative overflow-hidden basis-1/3 grow sm:basis-1/4 aspect-square sm:aspect-video bg-base-content/10 hover:bg-base-content/20">
-                        <img src={service?.img} className='absolute w-2/3 sm:w-1/2 aspect-auto bottom-0 right-0' />
+                        <img 
+                            src={service?.img} 
+                            className="w-2/3 sm:w-1/2 aspect-auto bottom-0 right-0 absolute" 
+                        />
                         <div className="card h-full !z-[2] w-full flex flex-col justify-start items-start gap-2 p-4">
-                            <h1 className='font-bold sm:text-xl'>{service?.title}</h1>
-                            <p className='text-sm sm:text-lg'>{service?.desc}</p>
+                            <h1 className="font-bold sm:text-xl">{service?.title}</h1>
+                            <p className="text-sm sm:text-lg">{service?.desc}</p>
                         </div>
                     </div>
                 ))}

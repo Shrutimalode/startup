@@ -1,10 +1,23 @@
 import React, { useState } from 'react';
 import { Phone, CheckCircle, Wrench, Zap, Home, Building, Shield, Clock } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import Footer from '../../Components/Footer/Footer';
 import ServiceBookingForm from '../../Components/ServiceBookingForm/ServiceBookingForm';
 import { Carousel } from "react-responsive-carousel";
+import { isAuthenticated, setRedirectAfterLogin } from '../../Utils/AuthData';
+
 const ContracterServices = () => {
+  const navigate = useNavigate();
   const [isBookingFormOpen, setIsBookingFormOpen] = useState(false);
+
+  const handleBookNowClick = () => {
+    if (isAuthenticated()) {
+      setIsBookingFormOpen(true);
+    } else {
+      setRedirectAfterLogin('/contracter-services');
+      navigate('/login');
+    }
+  };
 
   const services = [
     {
@@ -67,7 +80,7 @@ const ContracterServices = () => {
           <p className="text-sm sm:text-lg md:text-2xl opacity-90 text-blue-700 mt-1">घराबाहेर न पड़ता तज्ज्ञ सेवा तुमच्या दारात!</p>
           <p className="text-xs sm:text-base md:text-lg font-bold text-black mt-1">१ तासात सेवा, तुमच्या दारात !</p>
           <button 
-            onClick={() => setIsBookingFormOpen(true)}
+            onClick={handleBookNowClick}
             className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-4 py-1 sm:px-8 sm:py-3 rounded-full flex items-center gap-2 text-sm sm:text-base mt-3"
           >
             BOOK NOW
