@@ -99,56 +99,7 @@ const ZoomedPlotLayout = ({ onClose }) => {
               cursor: isDragging ? 'grabbing' : 'grab'
             }}
           >
-            {/* Compass - Positioned relative to plot layout */}
-            <div className="absolute -top-2 -right-2 sm:top-4 sm:right-4 z-10 scale-50 sm:scale-75 lg:scale-100 origin-top-right">
-              <div className="bg-white p-2 sm:p-4 rounded-lg shadow-lg">
-                <svg width="80" height="80" viewBox="0 0 100 100">
-                  <defs>
-                    <marker
-                      id="arrowhead-zoomed"
-                      markerWidth="10"
-                      markerHeight="7"
-                      refX="9"
-                      refY="3.5"
-                      orient="auto"
-                    >
-                      <polygon points="0 0, 10 3.5, 0 7" fill="black" />
-                    </marker>
-                  </defs>
-                  <line
-                    x1="10"
-                    y1="90"
-                    x2="10"
-                    y2="10"
-                    stroke="black"
-                    strokeWidth="2"
-                    markerEnd="url(#arrowhead-zoomed)"
-                  />
-                  <line
-                    x1="10"
-                    y1="90"
-                    x2="90"
-                    y2="90"
-                    stroke="black"
-                    strokeWidth="2"
-                    markerEnd="url(#arrowhead-zoomed)"
-                  />
-                  <text x="95" y="95" fontSize="12" fill="black">E</text>
-                  <text x="5" y="5" fontSize="12" fill="black">N</text>
-                </svg>
-              </div>
-            </div>
-
-            {/* Plot Layout */}
-            <div 
-              className="relative bg-gray-100 rounded-lg shadow-lg transition-transform duration-200 h-full"
-              style={{ 
-                transform: `scale(${zoomLevel})`,
-                transformOrigin: 'center center'
-              }}
-            >
-              <PlotOverlay onPlotClick={handlePlotClick} />
-            </div>
+            <PlotOverlay onPlotClick={handlePlotClick} />
           </div>
         </div>
       </div>

@@ -16,21 +16,27 @@ const AdsCarousel = () => {
       isSpecialOffer: true,
       link: '/manoram-nagri-services'
     },
-    /*{
+    {
       id: 2,
-      title: "More offers soon to be launch",
-      comingSoon: true,
-      background: "bg-gradient-to-r from-blue-400 via-blue-200 to-blue-100"
+      title: "आनंद नगर",
+      subtitle: "आपल्या स्वप्नातील घराचा प्लॉट आता सहज शक्य!",
+      image: "/images/width_800.webp",
+      background: "bg-gradient-to-r from-blue-200 via-blue-100 to-green-100",
+      isSpecialOffer: true,
+      link: '/anand-nagri-services'
     },
     {
       id: 3,
-      title: "More offers soon to be launch",
-      comingSoon: true,
-      background: "bg-gradient-to-r from-blue-400 via-blue-200 to-blue-100"
-    }*/
+      title: "आनंद सागर सिटी",
+      subtitle: "आपल्या कुटुंबासाठी सर्वोत्तम निवास स्थान!",
+      image: "/images/width_800.webp",
+      background: "bg-gradient-to-r from-purple-200 via-purple-100 to-pink-100",
+      isSpecialOffer: true,
+      link: '/anand-sagar-city-services'
+    }
   ];
 
-  const handleBookNow = (link) => {
+  const handleAdClick = (link) => {
     if (isAuthenticated()) {
       navigate(link);
     } else {
@@ -39,22 +45,81 @@ const AdsCarousel = () => {
     }
   };
 
+  const renderArrowPrev = (clickHandler, hasPrev) => {
+    return (
+      <button
+        onClick={clickHandler}
+        disabled={!hasPrev}
+        className={`absolute left-0 top-1/2 -translate-y-1/2 z-20 p-2 bg-black/30 hover:bg-black/50 rounded-r-lg transition-all ${
+          !hasPrev && 'opacity-50 cursor-not-allowed'
+        }`}
+        style={{ left: 0 }}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={2}
+          stroke="white"
+          className="w-6 h-6"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M15.75 19.5L8.25 12l7.5-7.5"
+          />
+        </svg>
+      </button>
+    );
+  };
+
+  const renderArrowNext = (clickHandler, hasNext) => {
+    return (
+      <button
+        onClick={clickHandler}
+        disabled={!hasNext}
+        className={`absolute right-0 top-1/2 -translate-y-1/2 z-20 p-2 bg-black/30 hover:bg-black/50 rounded-l-lg transition-all ${
+          !hasNext && 'opacity-50 cursor-not-allowed'
+        }`}
+        style={{ right: 0 }}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={2}
+          stroke="white"
+          className="w-6 h-6"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M8.25 4.5l7.5 7.5-7.5 7.5"
+          />
+        </svg>
+      </button>
+    );
+  };
+
   return (
     <div className="w-full max-w-xl sm:max-w-2xl mx-auto px-4 sm:px-8 my-3 sm:my-6">
       <Carousel
-        showArrows={false}
-        showStatus={true}
+        showArrows={true}
+        showStatus={false}
         showThumbs={false}
-        showIndicators={false}
+        showIndicators={true}
         infiniteLoop={true}
         autoPlay={true}
-        interval={4000}
+        interval={3000}
         className="rounded-lg overflow-hidden"
+        renderArrowPrev={renderArrowPrev}
+        renderArrowNext={renderArrowNext}
       >
         {ads.map((ad) => (
           <div
             key={ad.id}
-            className={`relative h-45 sm:h-72 md:h-80 rounded-xl shadow-xl border border-blue-200 overflow-hidden ${ad.background}`}
+            onClick={() => handleAdClick(ad.link)}
+            className={`relative h-45 sm:h-72 md:h-80 rounded-xl shadow-xl border border-blue-200 overflow-hidden ${ad.background} cursor-pointer transform transition-transform duration-300 hover:scale-[1.01]`}
           >
             {/* Overlay for text contrast */}
             <div className="absolute inset-0 bg-black/20 z-0"></div>
@@ -80,14 +145,6 @@ const AdsCarousel = () => {
                       <p className="text-sm sm:text-xl md:text-2xl font-semibold text-white drop-shadow-lg">
                         {ad.subtitle}
                       </p>
-                      <div className="flex justify-start mt-4">
-                        <button
-                          onClick={() => handleBookNow(ad.link)}
-                          className="bg-[#FFA500] hover:bg-[#FF8C00] text-white font-semibold px-6 py-2 sm:px-8 sm:py-3 rounded-full flex items-center gap-2 text-sm sm:text-base"
-                        >
-                          BOOK NOW
-                        </button>
-                      </div>
                     </div>
                   </div>
                 </div>

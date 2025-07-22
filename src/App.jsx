@@ -13,6 +13,8 @@ import HomeLoanServices from './Pages/HomeLoanServices/HomeLoanServices';
 import ContracterServices from './Pages/ContracterServices/ContracterServices';
 import CleaningServices from './Pages/CleaningServices/CleaningServices';
 import ManoramNagriServices from './Pages/ManoramNagri/ManoramNagriServices';
+import AnandNagriServices from './Pages/AnandNagri/AnandNagriServices';
+import AnandSagarCityServices from './Pages/AnandSagarCity/AnandSagarCityServices';
 import Navbar from './Components/Navbar/Navbar';
 import LoginPage from './Pages/LoginPage/LoginPage';
 import HomeInteriorsArchitecture from './Pages/Home_Interiors_Architecture/Home_Interiors_Architecture';
@@ -44,6 +46,8 @@ function App() {
           <Route path="/contracter-services" element={<ContracterServices />} />
           <Route path="/cleaning-services" element={<CleaningServices />} />
           <Route path="/manoram-nagri-services" element={<ManoramNagriServices />} />
+          <Route path="/anand-nagri-services" element={<AnandNagriServices />} />
+          <Route path="/anand-sagar-city-services" element={<AnandSagarCityServices />} />
           <Route path="/architecture-services" element={<HomeInteriorsArchitecture />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="*" element={<HomePage />} />

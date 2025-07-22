@@ -23,43 +23,47 @@ const CleaningServices = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Hero Section */}
-      <section className="relative min-h-[300px] sm:min-h-[350px] lg:min-h-[400px] bg-gradient-to-r from-[#0396FF] to-[#ABDCFF] overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.1)_0%,rgba(255,255,255,0)_70%)]"></div>
-        <div className="container mx-auto h-full px-2 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
-          <div className="flex flex-row items-center justify-between gap-4 sm:gap-8 h-full">
-            {/* Text Content - Always left aligned */}
-            <div className="w-1/2 text-white text-left z-10">
-              <h1 className="text-2xl sm:text-4xl lg:text-5xl font-bold mb-3 sm:mb-6">
-                कार, घर आणि सोलरपॅनेल स्वच्छतेचं समाधान
-              </h1>
-              <div className="space-y-1 sm:space-y-2 mb-4 sm:mb-8">
-                <p className="text-sm sm:text-lg lg:text-xl">फक्त RealtorXpert मध्ये!</p>
-                <p className="text-sm sm:text-lg lg:text-xl">१ तासात सेवा, तुमच्या दारात!</p>
-              </div>
-              <button
-                onClick={handleBookNowClick}
-                className="bg-[#FFA500] hover:bg-[#FF8C00] text-black font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-full text-sm sm:text-base lg:text-lg inline-flex items-center gap-2 transform hover:scale-105 transition-transform duration-200"
-              >
-                BOOK NOW
-                <span className="bg-white rounded-full p-1">
-                  <Phone className="w-3 h-3 sm:w-4 sm:h-4" />
-                </span>
-              </button>
-            </div>
+    <div className="bg-gradient-to-b from-blue-50 to-white min-h-screen flex flex-col">
+    {/* Hero Section */}
+    <section className="flex flex-row items-center justify-between px-2 sm:px-4 md:px-10 lg:px-16 py-4 md:py-0 bg-gradient-to-r from-blue-100 to-blue-50">
+      <div className="flex-1 flex flex-col justify-center items-center text-center space-y-2 sm:space-y-3 md:space-y-2 lg:space-y-2 ml-0 md:ml-5">
+        <h1 className="text-lg xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-blue-900 leading-snug sm:leading-snug md:leading-snug lg:leading-relaxed w-full">
+          <span className="block text-center w-full">कार, घर आणि सोलरपॅनेल</span>
+          <span className="block text-center w-full"> स्वच्छतेचं समाधान <span className="whitespace-nowrap">फक्त RealtorXpert मध्ये!</span></span>
+        </h1>
+        <p className="text-xs xs:text-sm sm:text-base md:text-base lg:text-lg font-bold text-black mt-1">
+          १ तासात सेवा, तुमच्या दारात !
+        </p>
+        <button 
+          onClick={handleBookNowClick}
+          className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-4 py-1 sm:px-8 sm:py-3 rounded-full flex items-center gap-2 text-xs xs:text-sm sm:text-base mt-3"
+        >
+          BOOK NOW
+        </button>
+      </div>
+      <div className="flex-1 flex justify-center items-center mb-4 md:mb-0 md:mt-1 relative min-h-[100px] sm:min-h-[130px] md:min-h-[170px] lg:min-h-[200px]">
+        {/* Solar image behind, half visible above */}
+        <img
+          src="/images/solar.png"
+          alt="Solar background"
+          className="absolute left-1/2 -translate-x-1/2 top-2 sm:top-6 md:top-10 lg:top-14 w-24 sm:w-32 md:w-40 lg:w-48 opacity-80 z-0 pointer-events-none select-none"
+          style={{zIndex: 0}}
+        />
+        {/* Cleaning image in front */}
+        <img
+          src="/images/cleaning.png"
+          alt="Home image"
+          className="relative h-32 xs:h-40 sm:h-52 md:h-64 lg:h-72 xl:h-80 object-contain z-10"
+          style={{zIndex: 1}}
+        />
+      </div>
+    </section>
 
-            {/* Image - Right aligned on all screens */}
-            <div className="w-1/2 flex justify-end items-center">
-              <img 
-                src="/images/copy.png" 
-                alt="Cleaning Services" 
-                className="w-full max-w-[180px] sm:max-w-[280px] lg:max-w-[350px] object-contain"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
+
+
+
+
+      
 
       {/* Services Sections */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
@@ -209,4 +213,4 @@ const CleaningServices = () => {
   );
 };
 
-export default CleaningServices; 
+export default CleaningServices;

@@ -1,6 +1,8 @@
+import React from 'react';
 import { useState } from 'react';
 import { PlotOverlay } from './PlotOverlay';
 import PlotDetailsModal from './PlotDetailsModal';
+import { plotDetails } from '../data/plotDetails';
 
 const plotStatus = {
   // Section A
@@ -28,7 +30,7 @@ const plotStatus = {
   'F-5': 'available', 'F-6': 'booked'
 };
 
-export function PlotLayout({ image, onClose, isOpen }) {
+const PlotLayout = ({ image, onClose, isOpen }) => {
   const [selectedPlot, setSelectedPlot] = useState(null);
 
   if (!isOpen) return null;
@@ -120,4 +122,6 @@ export function PlotLayout({ image, onClose, isOpen }) {
       )}
     </div>
   );
-} 
+};
+
+export default PlotLayout; 
