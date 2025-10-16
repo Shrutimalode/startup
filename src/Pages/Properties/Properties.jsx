@@ -35,7 +35,7 @@ const Properties = () => {
 
     const handleAddProperty = async (formData) => {
         try {
-            // Format the data to match the API structure
+            // Format the data to match the API structure exactly as specified
             const formattedData = {
                 project_name: formData.project_name || "",
                 project_type: formData.project_type || "plot",
@@ -62,13 +62,8 @@ const Properties = () => {
                 south_side_area: formData.south_side_area ? parseFloat(formData.south_side_area) : 0,
                 east_side_area: formData.east_side_area ? parseFloat(formData.east_side_area) : 0,
                 west_side_area: formData.west_side_area ? parseFloat(formData.west_side_area) : 0,
-                verified: formData.verified || false,
-                // Additional fields
-                bathrooms: formData.bathrooms ? parseFloat(formData.bathrooms) : 0,
-                bedrooms: formData.bedrooms ? parseFloat(formData.bedrooms) : 0,
-                living_room: formData.living_room ? parseFloat(formData.living_room) : 0,
-                kitchen: formData.kitchen ? parseFloat(formData.kitchen) : 0,
-                car_parking: formData.car_parking || "Not Available"
+                verified: formData.verified || false
+                // Note: Not including bathrooms, bedrooms, etc. as they're not in the POST API spec
             };
 
             console.log("Sending data to API:", formattedData);
@@ -87,7 +82,21 @@ const Properties = () => {
         } catch (error) {
             console.error("Error adding property:", error);
             console.error("Error response:", error.response);
-            toast.error("Failed to add property: " + (error.response?.data?.message || error.response?.data || error.message));
+            
+            // Display detailed validation errors
+            if (error.response?.data) {
+                if (error.response.data.message) {
+                    toast.error("Failed to add property: " + error.response.data.message);
+                } else if (error.response.data.errors) {
+                    // Handle validation errors
+                    const errorMessages = Object.values(error.response.data.errors).flat();
+                    toast.error("Validation errors: " + errorMessages.join(", "));
+                } else {
+                    toast.error("Failed to add property: " + JSON.stringify(error.response.data));
+                }
+            } else {
+                toast.error("Failed to add property: " + error.message);
+            }
         }
     };
 
@@ -190,13 +199,7 @@ const AddPropertyModal = ({ onClose, onSubmit }) => {
         south_side_area: '',
         east_side_area: '',
         west_side_area: '',
-        verified: false,
-        // Additional fields that might be expected by the API
-        bathrooms: '',
-        bedrooms: '',
-        living_room: '',
-        kitchen: '',
-        car_parking: ''
+        verified: false
     });
 
     const handleSubmit = (e) => {
@@ -483,11 +486,8 @@ const AddPropertyModal = ({ onClose, onSubmit }) => {
                             { name: 'north_side_area', label: 'North Side Area' },
                             { name: 'south_side_area', label: 'South Side Area' },
                             { name: 'east_side_area', label: 'East Side Area' },
-                            { name: 'west_side_area', label: 'West Side Area' },
-                            { name: 'bathrooms', label: 'Bathrooms' },
-                            { name: 'bedrooms', label: 'Bedrooms' },
-                            { name: 'living_room', label: 'Living Room' },
-                            { name: 'kitchen', label: 'Kitchen' }
+                            { name: 'west_side_area', label: 'West Side Area' }
+                            // Removed bathrooms, bedrooms, etc. as they're not in the POST API spec
                         ].map(({ name, label }) => (
                             <input
                                 key={name}
@@ -502,22 +502,7 @@ const AddPropertyModal = ({ onClose, onSubmit }) => {
                         ))}
                     </div>
 
-                    {/* Car Parking */}
-                    <div className="form-control">
-                        <label className="label">
-                            <span className="label-text">Car Parking</span>
-                        </label>
-                        <select
-                            name="car_parking"
-                            value={formData.car_parking}
-                            onChange={handleChange}
-                            className="select select-bordered w-full"
-                        >
-                            <option value="">Select Parking</option>
-                            <option value="Available">Available</option>
-                            <option value="Not Available">Not Available</option>
-                        </select>
-                    </div>
+                    {/* Note: Removed car_parking field as it's not in the POST API spec */}
 
                     {/* Description and Amenities */}
                     <textarea
