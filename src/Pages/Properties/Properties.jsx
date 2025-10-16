@@ -82,17 +82,19 @@ const Properties = () => {
         } catch (error) {
             console.error("Error adding property:", error);
             console.error("Error response:", error.response);
+            console.error("Error data:", error.response?.data);
             
             // Display detailed validation errors
             if (error.response?.data) {
-                if (error.response.data.message) {
-                    toast.error("Failed to add property: " + error.response.data.message);
-                } else if (error.response.data.errors) {
+                const errorData = error.response.data;
+                if (errorData.message) {
+                    toast.error("Failed to add property: " + errorData.message);
+                } else if (errorData.errors) {
                     // Handle validation errors
-                    const errorMessages = Object.values(error.response.data.errors).flat();
+                    const errorMessages = Object.values(errorData.errors).flat();
                     toast.error("Validation errors: " + errorMessages.join(", "));
                 } else {
-                    toast.error("Failed to add property: " + JSON.stringify(error.response.data));
+                    toast.error("Failed to add property: " + JSON.stringify(errorData));
                 }
             } else {
                 toast.error("Failed to add property: " + error.message);

@@ -10,6 +10,7 @@ export const addProperty = async (data) => {
     } catch (error) {
         console.error("Error in addProperty:", error);
         console.error("Error response:", error.response);
+        console.error("Error data:", error.response?.data);
         throw error;
     }
 }
