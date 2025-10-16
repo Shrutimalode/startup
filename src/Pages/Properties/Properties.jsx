@@ -37,46 +37,39 @@ const Properties = () => {
         try {
             // Format the data to match the API structure exactly as specified
             const formattedData = {
-                project_name: formData.project_name,
-                project_type: formData.project_type,
-                project_status: formData.project_status,
-                project_category: formData.project_category,
-                price_unit: formData.price_unit,
-                country: formData.country,
-                city: formData.city,
-                address: formData.address,
+                project_name: formData.project_name || "",
+                project_type: formData.project_type || "plot",
+                project_status: formData.project_status || "Rent",
+                project_category: formData.project_category || "1bhk",
+                price_unit: formData.price_unit || "rs",
+                country: formData.country || "",
+                city: formData.city || "",
+                address: formData.address || "",
                 latitude: formData.latitude ? parseFloat(formData.latitude) : 0,
                 longitude: formData.longitude ? parseFloat(formData.longitude) : 0,
-                description: formData.description,
-                assigned_agent: formData.assigned_agent,
-                aminities: formData.aminities,
+                description: formData.description || "",
+                assigned_agent: formData.assigned_agent || "",
+                aminities: formData.aminities || "",
                 price: formData.price ? parseFloat(formData.price) : 0,
-                contact: formData.contact,
-                owner_name: formData.owner_name,
-                image_url_1: formData.image_url_1,
-                image_url_2: formData.image_url_2,
-                image_url_3: formData.image_url_3,
-                total_buildup_area: formData.total_buildup_area ? parseFloat(formData.total_buildup_area) : 0,
+                contact: formData.contact || "",
+                owner_name: formData.owner_name || "",
+                image_url_1: formData.image_url_1 || "",
+                image_url_2: formData.image_url_2 || "",
+                image_url_3: formData.image_url_3 || "",
+                total_building_area: formData.total_building_area ? parseFloat(formData.total_building_area) : 0,
                 sealable_area: formData.sealable_area ? parseFloat(formData.sealable_area) : 0,
                 north_side_area: formData.north_side_area ? parseFloat(formData.north_side_area) : 0,
                 south_side_area: formData.south_side_area ? parseFloat(formData.south_side_area) : 0,
                 east_side_area: formData.east_side_area ? parseFloat(formData.east_side_area) : 0,
                 west_side_area: formData.west_side_area ? parseFloat(formData.west_side_area) : 0,
-                verified: formData.verified
+                verified: formData.verified || false
             };
-
-            // Remove any fields with empty string values to prevent validation issues
-            Object.keys(formattedData).forEach(key => {
-                if (formattedData[key] === "") {
-                    delete formattedData[key];
-                }
-            });
 
             console.log("Sending data to API:", formattedData);
             
             const response = await addProperty(formattedData);
             
-            if (response && response.status === 200) {
+            if (response && (response.status === 200 || response.status === 201)) {
                 toast.success("Property added successfully!");
                 setShowAddPropertyModal(false);
                 // Refresh the properties list
@@ -93,14 +86,18 @@ const Properties = () => {
             // Display detailed validation errors
             if (error.response?.data) {
                 const errorData = error.response.data;
-                if (errorData.message) {
+                if (errorData.detail) {
+                    // Handle FastAPI validation errors
+                    if (Array.isArray(errorData.detail)) {
+                        const errorMessages = errorData.detail.map(err => 
+                            `${err.loc?.join('.')}: ${err.msg}`
+                        );
+                        toast.error("Validation errors: " + errorMessages.join(", "));
+                    } else {
+                        toast.error("Failed to add property: " + errorData.detail);
+                    }
+                } else if (errorData.message) {
                     toast.error("Failed to add property: " + errorData.message);
-                } else if (errorData.detail) {
-                    toast.error("Failed to add property: " + errorData.detail);
-                } else if (errorData.errors) {
-                    // Handle validation errors
-                    const errorMessages = Object.values(errorData.errors).flat();
-                    toast.error("Validation errors: " + errorMessages.join(", "));
                 } else {
                     toast.error("Failed to add property: " + JSON.stringify(errorData));
                 }
@@ -202,7 +199,7 @@ const AddPropertyModal = ({ onClose, onSubmit }) => {
         image_url_1: '',
         image_url_2: '',
         image_url_3: '',
-        total_buildup_area: '',
+        total_building_area: '',
         sealable_area: '',
         north_side_area: '',
         south_side_area: '',
@@ -213,6 +210,21 @@ const AddPropertyModal = ({ onClose, onSubmit }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        
+        // Basic validation for required fields
+        const requiredFields = [
+            'project_name', 'project_type', 'project_status', 'project_category',
+            'country', 'city', 'address', 'price', 'contact', 'owner_name',
+            'description', 'assigned_agent', 'aminities'
+        ];
+        
+        const missingFields = requiredFields.filter(field => !formData[field] || formData[field].toString().trim() === '');
+        
+        if (missingFields.length > 0) {
+            toast.error(`Please fill in all required fields: ${missingFields.join(', ')}`);
+            return;
+        }
+        
         onSubmit(formData);
     };
 
@@ -336,6 +348,60 @@ const AddPropertyModal = ({ onClose, onSubmit }) => {
                         </select>
                     </div>
 
+                    {/* Contact & Agent Info */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input
+                            name="contact"
+                            placeholder="Contact Number *"
+                            value={formData.contact}
+                            onChange={handleChange}
+                            className="input input-bordered w-full"
+                            required
+                        />
+                        <input
+                            name="owner_name"
+                            placeholder="Owner Name *"
+                            value={formData.owner_name}
+                            onChange={handleChange}
+                            className="input input-bordered w-full"
+                            required
+                        />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input
+                            name="assigned_agent"
+                            placeholder="Assigned Agent *"
+                            value={formData.assigned_agent}
+                            onChange={handleChange}
+                            className="input input-bordered w-full"
+                            required
+                        />
+                        <input
+                            name="price"
+                            type="number"
+                            placeholder="Price *"
+                            value={formData.price}
+                            onChange={handleChange}
+                            className="input input-bordered w-full"
+                            required
+                        />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <select
+                            name="price_unit"
+                            value={formData.price_unit}
+                            onChange={handleChange}
+                            className="select select-bordered w-full"
+                            required
+                        >
+                            {priceUnits.map(unit => (
+                                <option key={unit} value={unit}>{unit}</option>
+                            ))}
+                        </select>
+                    </div>
+
                     {/* Location Info */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <input
@@ -417,61 +483,25 @@ const AddPropertyModal = ({ onClose, onSubmit }) => {
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <input
-                            name="price"
-                            type="number"
-                            placeholder="Price *"
-                            value={formData.price}
-                            onChange={handleChange}
-                            className="input input-bordered w-full"
-                            required
-                        />
-                        <select
-                            name="price_unit"
-                            value={formData.price_unit}
-                            onChange={handleChange}
-                            className="select select-bordered w-full"
-                            required
-                        >
-                            {priceUnits.map(unit => (
-                                <option key={unit} value={unit}>{unit}</option>
-                            ))}
-                        </select>
-                    </div>
-
-                    {/* Contact Info */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <input
-                            name="contact"
-                            placeholder="Contact Number *"
-                            value={formData.contact}
-                            onChange={handleChange}
-                            className="input input-bordered w-full"
-                            required
-                        />
-                        <input
-                            name="owner_name"
-                            placeholder="Owner Name"
-                            value={formData.owner_name}
-                            onChange={handleChange}
-                            className="input input-bordered w-full"
-                        />
-                        <input
-                            name="owner_contact"
-                            placeholder="Owner Contact"
-                            value={formData.owner_contact}
-                            onChange={handleChange}
-                            className="input input-bordered w-full"
-                        />
-                        <input
-                            name="assigned_agent"
-                            placeholder="Assigned Agent"
-                            value={formData.assigned_agent}
-                            onChange={handleChange}
-                            className="input input-bordered w-full"
-                        />
-                    </div>
+                    {/* Description and Amenities */}
+                    <textarea
+                        name="description"
+                        placeholder="Description *"
+                        value={formData.description}
+                        onChange={handleChange}
+                        className="textarea textarea-bordered w-full"
+                        rows="4"
+                        required
+                    />
+                    <textarea
+                        name="aminities"
+                        placeholder="Amenities (comma separated) *"
+                        value={formData.aminities}
+                        onChange={handleChange}
+                        className="textarea textarea-bordered w-full"
+                        rows="3"
+                        required
+                    />
 
                     {/* Images */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -490,7 +520,7 @@ const AddPropertyModal = ({ onClose, onSubmit }) => {
                     {/* Area Details */}
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                         {[
-                            { name: 'total_buildup_area', label: 'Total Buildup Area' },
+                            { name: 'total_building_area', label: 'Total Building Area' },
                             { name: 'sealable_area', label: 'Sealable Area' },
                             { name: 'north_side_area', label: 'North Side Area' },
                             { name: 'south_side_area', label: 'South Side Area' },
@@ -509,26 +539,6 @@ const AddPropertyModal = ({ onClose, onSubmit }) => {
                             />
                         ))}
                     </div>
-
-                    {/* Note: Removed car_parking field as it's not in the POST API spec */}
-
-                    {/* Description and Amenities */}
-                    <textarea
-                        name="description"
-                        placeholder="Description"
-                        value={formData.description}
-                        onChange={handleChange}
-                        className="textarea textarea-bordered w-full"
-                        rows="4"
-                    />
-                    <textarea
-                        name="aminities"
-                        placeholder="Amenities (comma separated)"
-                        value={formData.aminities}
-                        onChange={handleChange}
-                        className="textarea textarea-bordered w-full"
-                        rows="3"
-                    />
 
                     {/* Verification */}
                     <div className="form-control">

@@ -25,78 +25,73 @@ const AddPropertyPage = ({ref}) => {
             [field]: value,
         }));
     };
-
-    const handleSubmit = (e) => {
-        const user = getUser()
-        if (!user) {
-            toast.error("Please Login Again to Continue")
-            return;
-        }
-        e.preventDefault();
-        if ((currentStep === 4) || (currentStep === 3 && (formData?.["project_type"] !== "flat" && formData?.["project_type"] !== "house"))) {
-            let finalData = {
-                project_name: formData?.["project_name"] || "",
-                project_type: formData?.["project_type"] || "",
-                project_status: formData?.["project_status"] || "",
-                project_category: formData?.["project_category"] || "",
-                price_unit: formData?.["price_unit"] || "",
-                price: formData?.["price"] || "",
-                country: formData?.["country"] || "",
-                city: formData?.["city"] || "",
-                address: `${formData?.["address"] || ""}, ${formData?.["city"] || ""}, ${formData?.["district"] || ""}, ${formData?.["state"] || ""}`,
-                user_id: user?.id,
-                contact: formData?.["contact"] || "",
-            }
-
-            // Add latitude and longitude if available
-            if (formData?.["latitude"]) {
-                finalData.latitude = formData?.["latitude"]
-            }
-            if (formData?.["longitude"]) {
-                finalData.longitude = formData?.["longitude"]
-            }
-
-            if (formData?.["image_url_1"]) {
-                finalData.image_url_1 = formData?.["image_url_1"]
-            }
-            if (formData?.["living_room"]) {
-                finalData.living_room = formData?.["living_room"]
-            }
-            if (formData?.["bedrooms"]) {
-                finalData.bedrooms = formData?.["bedrooms"]
-            }
-            if (formData?.["kitchen"]) {
-                finalData.kitchen = formData?.["kitchen"]
-            }
-            if (formData?.["bathrooms"]) {
-                finalData.bathrooms = formData?.["bathrooms"]
-            }
-            if (formData?.["car_parking"]) {
-                finalData.car_parking = formData?.["car_parking"]
-            }
-
-            toast.promise(addProperty(finalData), {
-                loading: "Adding Property",
-                success: (data) => {
-                    if (data.status === 200) {
-                        setFormData({});
-                        setCurrentStep(1);
-                        ref?.current?.close();
-                        mutate('properties')
-                        return "Property Added Successfully";
-                    }
-                    toast.error("Failed to Add Property");
-                },
-                error: (error) => {
-                    console.log(error)
-                    return "Failed to Add Property";
-                }
-            })
-        }
-        else {
-            nextStep();
-        }
+const handleSubmit = (e) => {
+    const user = getUser()
+    if (!user) {
+        toast.error("Please Login Again to Continue")
+        return;
     }
+    e.preventDefault();
+    
+    if ((currentStep === 4) || (currentStep === 3 && (formData?.["project_type"] !== "flat" && formData?.["project_type"] !== "house"))) {
+        let finalData = {
+            project_name: formData?.["project_name"] || "",
+            project_type: formData?.["project_type"] || "",
+            project_status: formData?.["project_status"] || "",
+            project_category: formData?.["project_category"] || "",
+            price_unit: formData?.["price_unit"] || "",
+            country: formData?.["country"] || "",
+            city: formData?.["city"] || "",
+            address: formData?.["address"] || "", // Don't concatenate, send as single string
+            latitude: Number(formData?.["latitude"]) || 0,
+            longitude: Number(formData?.["longitude"]) || 0,
+            description: formData?.["description"] || "",
+            assigned_agent: formData?.["assigned_agent"] || "",
+            aminities: formData?.["aminities"] || "", // Note: typo in API - "aminities" not "amenities"
+            price: Number(formData?.["price"]) || 0,
+            contact: formData?.["contact"] || "",
+            owner_name: formData?.["owner_name"] || user?.name || "", // Add owner_name
+            image_url_1: formData?.["image_url_1"] || "",
+            image_url_2: formData?.["image_url_2"] || "",
+            image_url_3: formData?.["image_url_3"] || "",
+            total_building_area: Number(formData?.["total_building_area"]) || 0,
+            sealable_area: Number(formData?.["sealable_area"]) || 0,
+            north_side_area: Number(formData?.["north_side_area"]) || 0,
+            south_side_area: Number(formData?.["south_side_area"]) || 0,
+            east_side_area: Number(formData?.["east_side_area"]) || 0,
+            west_side_area: Number(formData?.["west_side_area"]) || 0,
+            verified: false // Default to false as per API
+        }
+
+        // Remove user_id since it's not in the API schema
+        // Add any additional fields that might be in your form but not in finalData
+
+        console.log("Final data being sent:", finalData);
+
+        toast.promise(addProperty(finalData), {
+            loading: "Adding Property",
+            success: (data) => {
+                console.log("Success response:", data);
+                if (data.status === 200 || data.status === 201) {
+                    setFormData({});
+                    setCurrentStep(1);
+                    ref?.current?.close();
+                    mutate('properties')
+                    return "Property Added Successfully";
+                }
+                toast.error("Failed to Add Property");
+            },
+            error: (error) => {
+                console.log("Error details:", error);
+                console.log("Error response:", error.response);
+                return "Failed to Add Property";
+            }
+        })
+    }
+    else {
+        nextStep();
+    }
+}
 
     return (
         <form onSubmit={handleSubmit} className="flex flex-col overflow-auto gap-4 justify-center items-center">
