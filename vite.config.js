@@ -8,7 +8,14 @@ export default defineConfig({
   plugins: [react(),tailwindcss()],
   server :{
     host : true,
-    port: 5173, 
+    port: 5173,
+    proxy: {
+      '/api': {
+        target: 'https://realtorxpert.onrender.com',
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/api/, '')
+      }
+    }
   }
 })
-

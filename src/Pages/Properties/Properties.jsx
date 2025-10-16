@@ -71,6 +71,8 @@ const Properties = () => {
                 car_parking: formData.car_parking || "Not Available"
             };
 
+            console.log("Sending data to API:", formattedData);
+            
             const response = await addProperty(formattedData);
             
             if (response && response.status === 200) {
@@ -84,7 +86,8 @@ const Properties = () => {
             }
         } catch (error) {
             console.error("Error adding property:", error);
-            toast.error("Failed to add property: " + (error.response?.data?.message || error.message));
+            console.error("Error response:", error.response);
+            toast.error("Failed to add property: " + (error.response?.data?.message || error.response?.data || error.message));
         }
     };
 

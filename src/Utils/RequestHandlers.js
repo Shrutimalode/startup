@@ -4,6 +4,7 @@ import { apiurl } from "./Contants";
 
 export const GetRequest = async (url)=>{
     try{
+        console.log("Making GET request to:", apiurl + url);
         const res = await axios.get(apiurl + url);
         return res;
     }
@@ -15,6 +16,7 @@ export const GetRequest = async (url)=>{
 
 export const PostRequest = async (url, data)=>{
     try{
+        console.log("Making POST request to:", apiurl + url, "with data:", data);
         const res = await axios.post(apiurl + url, data);
         return res;
     }
@@ -33,6 +35,7 @@ export const AuthPostRequest = async (url, params)=> {
             ...params,
             userId: id
         }
+        console.log("Making authenticated POST request to:", apiurl + url, "with data:", params);
         const res = await axios.post(apiurl + url, params);
         return res;
     } catch (err) {
