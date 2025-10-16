@@ -37,34 +37,40 @@ const Properties = () => {
         try {
             // Format the data to match the API structure exactly as specified
             const formattedData = {
-                project_name: formData.project_name || "",
-                project_type: formData.project_type || "plot",
-                project_status: formData.project_status || "Rent",
-                project_category: formData.project_category || "1bhk",
-                price_unit: formData.price_unit || "rs",
-                country: formData.country || "",
-                city: formData.city || "",
-                address: formData.address || "",
+                project_name: formData.project_name,
+                project_type: formData.project_type,
+                project_status: formData.project_status,
+                project_category: formData.project_category,
+                price_unit: formData.price_unit,
+                country: formData.country,
+                city: formData.city,
+                address: formData.address,
                 latitude: formData.latitude ? parseFloat(formData.latitude) : 0,
                 longitude: formData.longitude ? parseFloat(formData.longitude) : 0,
-                description: formData.description || "",
-                assigned_agent: formData.assigned_agent || "",
-                aminities: formData.aminities || "",
+                description: formData.description,
+                assigned_agent: formData.assigned_agent,
+                aminities: formData.aminities,
                 price: formData.price ? parseFloat(formData.price) : 0,
-                contact: formData.contact || "",
-                owner_name: formData.owner_name || "",
-                image_url_1: formData.image_url_1 || "",
-                image_url_2: formData.image_url_2 || "",
-                image_url_3: formData.image_url_3 || "",
+                contact: formData.contact,
+                owner_name: formData.owner_name,
+                image_url_1: formData.image_url_1,
+                image_url_2: formData.image_url_2,
+                image_url_3: formData.image_url_3,
                 total_buildup_area: formData.total_buildup_area ? parseFloat(formData.total_buildup_area) : 0,
                 sealable_area: formData.sealable_area ? parseFloat(formData.sealable_area) : 0,
                 north_side_area: formData.north_side_area ? parseFloat(formData.north_side_area) : 0,
                 south_side_area: formData.south_side_area ? parseFloat(formData.south_side_area) : 0,
                 east_side_area: formData.east_side_area ? parseFloat(formData.east_side_area) : 0,
                 west_side_area: formData.west_side_area ? parseFloat(formData.west_side_area) : 0,
-                verified: formData.verified || false
-                // Note: Not including bathrooms, bedrooms, etc. as they're not in the POST API spec
+                verified: formData.verified
             };
+
+            // Remove any fields with empty string values to prevent validation issues
+            Object.keys(formattedData).forEach(key => {
+                if (formattedData[key] === "") {
+                    delete formattedData[key];
+                }
+            });
 
             console.log("Sending data to API:", formattedData);
             
@@ -89,6 +95,8 @@ const Properties = () => {
                 const errorData = error.response.data;
                 if (errorData.message) {
                     toast.error("Failed to add property: " + errorData.message);
+                } else if (errorData.detail) {
+                    toast.error("Failed to add property: " + errorData.detail);
                 } else if (errorData.errors) {
                     // Handle validation errors
                     const errorMessages = Object.values(errorData.errors).flat();
@@ -176,9 +184,9 @@ const PropertySkeleton = () => {
 const AddPropertyModal = ({ onClose, onSubmit }) => {
     const [formData, setFormData] = useState({
         project_name: '',
-        project_type: '',
-        project_status: 'Sell',
-        project_category: '',
+        project_type: 'plot',
+        project_status: 'Rent',
+        project_category: '1bhk',
         price_unit: 'rs',
         country: '',
         city: '',
@@ -191,7 +199,6 @@ const AddPropertyModal = ({ onClose, onSubmit }) => {
         price: '',
         contact: '',
         owner_name: '',
-        owner_contact: '',
         image_url_1: '',
         image_url_2: '',
         image_url_3: '',
@@ -489,7 +496,6 @@ const AddPropertyModal = ({ onClose, onSubmit }) => {
                             { name: 'south_side_area', label: 'South Side Area' },
                             { name: 'east_side_area', label: 'East Side Area' },
                             { name: 'west_side_area', label: 'West Side Area' }
-                            // Removed bathrooms, bedrooms, etc. as they're not in the POST API spec
                         ].map(({ name, label }) => (
                             <input
                                 key={name}
