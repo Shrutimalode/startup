@@ -8,7 +8,7 @@ export const GetRequest = async (url)=>{
         return res;
     }
     catch(err){
-        console.log(err);
+        console.error("GET request failed:", err.response || err);
         return null;
     }
 }
@@ -19,14 +19,14 @@ export const PostRequest = async (url, data)=>{
         return res;
     }
     catch(err){
-        console.log(err);
-        return null;
+        console.error("POST request failed:", err.response || err);
+        throw err;
     }
 }
 
 export const AuthPostRequest = async (url, params)=> {
     try {
-        const user = getUser;
+        const user = getUser(); // Fixed: Added parentheses to actually call the function
         if (!user) return null;
         const id = user.id;
         params = {
@@ -36,7 +36,7 @@ export const AuthPostRequest = async (url, params)=> {
         const res = await axios.post(apiurl + url, params);
         return res;
     } catch (err) {
-        console.log(err);
-        return null;
+        console.error("Auth POST request failed:", err.response || err);
+        throw err;
     }
 }

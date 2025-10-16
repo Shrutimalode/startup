@@ -4,6 +4,8 @@ import { getAllProperties } from '../../actions/Properties/Properties';
 import { useNavigate } from 'react-router';
 import MapPicker from '../../Components/MapPicker/MapPicker';
 import toast from 'react-hot-toast';
+import { addProperty } from '../../actions/AddProperty/AddProperty';
+import { mutate } from 'swr';
 
 const Properties = () => {
     const { data: properties, isLoading } = useSWR('properties', getAllProperties, {
@@ -31,14 +33,59 @@ const Properties = () => {
         }
     }, [properties]);
 
-    const handleAddProperty = (formData) => {
-        // Here you would typically make an API call to save the property
-        console.log('Saving property:', formData);
-        // Example API call:
-        // await addProperty(formData);
-        setShowAddPropertyModal(false);
-        // Trigger refetch of properties
-        // mutate('properties');
+    const handleAddProperty = async (formData) => {
+        try {
+            // Format the data to match the API structure
+            const formattedData = {
+                project_name: formData.project_name || "",
+                project_type: formData.project_type || "plot",
+                project_status: formData.project_status || "Rent",
+                project_category: formData.project_category || "1bhk",
+                price_unit: formData.price_unit || "rs",
+                country: formData.country || "",
+                city: formData.city || "",
+                address: formData.address || "",
+                latitude: formData.latitude ? parseFloat(formData.latitude) : 0,
+                longitude: formData.longitude ? parseFloat(formData.longitude) : 0,
+                description: formData.description || "",
+                assigned_agent: formData.assigned_agent || "",
+                aminities: formData.aminities || "",
+                price: formData.price ? parseFloat(formData.price) : 0,
+                contact: formData.contact || "",
+                owner_name: formData.owner_name || "",
+                image_url_1: formData.image_url_1 || "",
+                image_url_2: formData.image_url_2 || "",
+                image_url_3: formData.image_url_3 || "",
+                total_buildup_area: formData.total_buildup_area ? parseFloat(formData.total_buildup_area) : 0,
+                sealable_area: formData.sealable_area ? parseFloat(formData.sealable_area) : 0,
+                north_side_area: formData.north_side_area ? parseFloat(formData.north_side_area) : 0,
+                south_side_area: formData.south_side_area ? parseFloat(formData.south_side_area) : 0,
+                east_side_area: formData.east_side_area ? parseFloat(formData.east_side_area) : 0,
+                west_side_area: formData.west_side_area ? parseFloat(formData.west_side_area) : 0,
+                verified: formData.verified || false,
+                // Additional fields
+                bathrooms: formData.bathrooms ? parseFloat(formData.bathrooms) : 0,
+                bedrooms: formData.bedrooms ? parseFloat(formData.bedrooms) : 0,
+                living_room: formData.living_room ? parseFloat(formData.living_room) : 0,
+                kitchen: formData.kitchen ? parseFloat(formData.kitchen) : 0,
+                car_parking: formData.car_parking || "Not Available"
+            };
+
+            const response = await addProperty(formattedData);
+            
+            if (response && response.status === 200) {
+                toast.success("Property added successfully!");
+                setShowAddPropertyModal(false);
+                // Refresh the properties list
+                mutate('properties');
+            } else {
+                console.error("API response:", response);
+                toast.error("Failed to add property: " + (response?.data?.message || "Unknown error"));
+            }
+        } catch (error) {
+            console.error("Error adding property:", error);
+            toast.error("Failed to add property: " + (error.response?.data?.message || error.message));
+        }
     };
 
     return (
@@ -141,6 +188,12 @@ const AddPropertyModal = ({ onClose, onSubmit }) => {
         east_side_area: '',
         west_side_area: '',
         verified: false,
+        // Additional fields that might be expected by the API
+        bathrooms: '',
+        bedrooms: '',
+        living_room: '',
+        kitchen: '',
+        car_parking: ''
     });
 
     const handleSubmit = (e) => {
@@ -427,7 +480,11 @@ const AddPropertyModal = ({ onClose, onSubmit }) => {
                             { name: 'north_side_area', label: 'North Side Area' },
                             { name: 'south_side_area', label: 'South Side Area' },
                             { name: 'east_side_area', label: 'East Side Area' },
-                            { name: 'west_side_area', label: 'West Side Area' }
+                            { name: 'west_side_area', label: 'West Side Area' },
+                            { name: 'bathrooms', label: 'Bathrooms' },
+                            { name: 'bedrooms', label: 'Bedrooms' },
+                            { name: 'living_room', label: 'Living Room' },
+                            { name: 'kitchen', label: 'Kitchen' }
                         ].map(({ name, label }) => (
                             <input
                                 key={name}
@@ -440,6 +497,23 @@ const AddPropertyModal = ({ onClose, onSubmit }) => {
                                 className="input input-bordered w-full"
                             />
                         ))}
+                    </div>
+
+                    {/* Car Parking */}
+                    <div className="form-control">
+                        <label className="label">
+                            <span className="label-text">Car Parking</span>
+                        </label>
+                        <select
+                            name="car_parking"
+                            value={formData.car_parking}
+                            onChange={handleChange}
+                            className="select select-bordered w-full"
+                        >
+                            <option value="">Select Parking</option>
+                            <option value="Available">Available</option>
+                            <option value="Not Available">Not Available</option>
+                        </select>
                     </div>
 
                     {/* Description and Amenities */}
