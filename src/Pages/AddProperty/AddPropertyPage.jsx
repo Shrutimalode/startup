@@ -48,6 +48,14 @@ const AddPropertyPage = ({ref}) => {
                 contact: formData?.["contact"] || "",
             }
 
+            // Add latitude and longitude if available
+            if (formData?.["latitude"]) {
+                finalData.latitude = formData?.["latitude"]
+            }
+            if (formData?.["longitude"]) {
+                finalData.longitude = formData?.["longitude"]
+            }
+
             if (formData?.["image_url_1"]) {
                 finalData.image_url_1 = formData?.["image_url_1"]
             }

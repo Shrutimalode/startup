@@ -1,3 +1,6 @@
+import toast from "react-hot-toast";
+import MapPicker from "../../../Components/MapPicker/MapPicker";
+
 const LocationForm = ({ data = {}, handleInputChange }) => {
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -10,6 +13,51 @@ const LocationForm = ({ data = {}, handleInputChange }) => {
 
         handleInputChange(name, value);
     }
+
+    const handleLocationSelect = (latlng) => {
+        handleInputChange("latitude", latlng.lat.toString());
+        handleInputChange("longitude", latlng.lng.toString());
+        toast.success("Location selected successfully!");
+    }
+
+    const getCurrentLocation = () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const latlng = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+                    handleLocationSelect(latlng);
+                },
+                (error) => {
+                    console.error("Error getting location:", error);
+                    let errorMessage = "Unable to fetch location. ";
+                    switch (error.code) {
+                        case error.PERMISSION_DENIED:
+                            errorMessage += "Permission denied. Please enable location access.";
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            errorMessage += "Location information is unavailable.";
+                            break;
+                        case error.TIMEOUT:
+                            errorMessage += "The request to get location timed out.";
+                            break;
+                        default:
+                            errorMessage += "An unknown error occurred.";
+                            break;
+                    }
+                    toast.error(errorMessage);
+                }
+            );
+        } else {
+            toast.error("Geolocation is not supported by this browser.");
+        }
+    };
+
+    // Prepare initial position for the map
+    const initialPosition = data?.latitude && data?.longitude ? 
+        { lat: parseFloat(data.latitude), lng: parseFloat(data.longitude) } : null;
 
     return (
         <div className="h-full w-full flex flex-col justify-center items-center gap-4 ">
@@ -50,6 +98,64 @@ const LocationForm = ({ data = {}, handleInputChange }) => {
                     <input type="text" value={data?.["contact"] || ""} placeholder="Contact" pattern="[0-9]{10}" name="contact" minLength={3} title="Contact" onChange={handleChange} className="input input-sm sm:input-md w-full validator focus-within:outline-none" required />
                     <p className="validator-hint !hidden sm:flex">Enter 10 Digit Contact</p>
                 </fieldset>
+
+                {/* Location Coordinates Section */}
+                <div className="w-full mt-4">
+                    <h3 className="text-lg font-semibold mb-2">Property Location</h3>
+                    <div className="flex flex-col gap-4">
+                        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
+                            <button 
+                                type="button" 
+                                onClick={getCurrentLocation}
+                                className="btn btn-primary btn-sm md:btn-md"
+                            >
+                                Get Current Location
+                            </button>
+                            
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1">
+                                <fieldset className="fieldset">
+                                    <legend className="fieldset-legend">Latitude</legend>
+                                    <input 
+                                        type="number" 
+                                        step="any"
+                                        value={data?.["latitude"] || ""} 
+                                        placeholder="Latitude" 
+                                        name="latitude" 
+                                        onChange={handleChange} 
+                                        className="input input-sm sm:input-md w-full focus-within:outline-none" 
+                                    />
+                                </fieldset>
+                                
+                                <fieldset className="fieldset">
+                                    <legend className="fieldset-legend">Longitude</legend>
+                                    <input 
+                                        type="number" 
+                                        step="any"
+                                        value={data?.["longitude"] || ""} 
+                                        placeholder="Longitude" 
+                                        name="longitude" 
+                                        onChange={handleChange} 
+                                        className="input input-sm sm:input-md w-full focus-within:outline-none" 
+                                    />
+                                </fieldset>
+                            </div>
+                        </div>
+                        
+                        {/* Map Picker */}
+                        <div className="mt-4">
+                            <label className="label">
+                                <span className="label-text">Select location on map</span>
+                            </label>
+                            <MapPicker 
+                                onLocationSelect={handleLocationSelect} 
+                                initialPosition={initialPosition}
+                            />
+                            <p className="text-sm text-gray-500 mt-2">
+                                Click anywhere on the map to select the property location
+                            </p>
+                        </div>
+                    </div>
+                </div>
 
             </div>
         </div>
